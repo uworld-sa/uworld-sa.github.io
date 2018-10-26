@@ -13,11 +13,11 @@ MyObject.prototype.push = function (el) {
 // prototype push
 MyObject.prototype.pop = function () {
 	let length = this.length;
-	let el = this[this.length - 1]
+	let el = this[length - 1]
 	if (length == 0) {
 		return undefined;
 	}
-	delete this[this.length - 1];
+	delete this[length - 1];
 	return el;
 };
 
@@ -89,6 +89,20 @@ MyObject.prototype.sort = function (f) {
 		}
 	}
 	return this;
+};
+
+// prototype join
+MyObject.prototype.toString = function () {
+    let length = this.length;
+    let string = '';
+    if (length == 0) {
+        return string;
+    }
+    string += '0:' + this[0];
+    for (let i = 1; i < length; i++) {
+        string +=  ',' +i + ':' + this[i];
+    }
+    return string;
 };
 
 Object.defineProperty(MyObject.prototype, "length", {
