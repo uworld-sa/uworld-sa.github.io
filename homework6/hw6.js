@@ -142,7 +142,7 @@ function dodo(name_input) {
         if (blocked == true) {
             return
         }
-        health -= 5;
+        health -= 10;
         satiety -= 10;
         happy += 5;
         strenght += 23;
