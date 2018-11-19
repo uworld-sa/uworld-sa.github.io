@@ -74,7 +74,7 @@ function dodo(name_input) {
         if (health <= 0) {
             die = true;
             clearInterval(timer);
-            var elements = document.querySelectorAll('.actions button');
+            var elements = dodo_item.querySelectorAll('.actions button');
             for (var i=0; i < elements.length; i++) {
                 elements[i].disabled = true;
             }
