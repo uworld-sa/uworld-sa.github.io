@@ -83,7 +83,13 @@ document.addEventListener('DOMContentLoaded', function documentReady() {
             updatedTODO = (updatedTODO != undefined) ? (updatedTODO.innerHTML) : (undefined);
             todoArr.push({text: textTODO.innerHTML,input:input.checked,created:createdTODO,updated:updatedTODO});
         }
-        localStorage.setItem('TODO', JSON.stringify(todoArr));
+        try {
+            localStorage.setItem('TODO', JSON.stringify(todoArr));
+        } catch (e) {
+            if (e == QUOTA_EXCEEDED_ERR) {
+                alert('Превышен лимит');
+            }
+        }
     }
     list.onclick = function(event) {
         // вывести тип события, элемент и координаты клика
