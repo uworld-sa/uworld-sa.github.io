@@ -1,0 +1,74 @@
+button {
+    line-height: 34px;
+    padding: 0px 10px;
+    border:0px;
+}
+input {
+    line-height: 30px;
+}
+#add {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+#control-buttons {
+    padding-top: 20px;
+}
+
+#reverse {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+}
+
+#removeAll {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+ul#buy-list {
+    padding-left: 0px;
+    list-style: none;
+}
+
+ul#buy-list .removeItem {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    margin-right: 10px;
+    line-height: 28px;
+    height: 28px;
+    width: 28px;
+
+}
+
+ul#buy-list .editItem,ul#buy-list .saveItem {
+    margin-right: 10px;
+    line-height: 28px;
+    height: 28px;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+ul#buy-list li span {
+    margin-right: 15px;
+    line-height: 26px;
+    border: 1px solid transparent;
+    display: inline-block;
+}
+
+ul#buy-list li {
+    margin-bottom: 20px;
+}
+
+ul#buy-list li input:checked + .text{
+    text-decoration: line-through;
+}
+
+ul#buy-list li span.edited {
+    border: 1px solid red;
+    padding: 0px 5px;
+}
