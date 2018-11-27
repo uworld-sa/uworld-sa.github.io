@@ -108,7 +108,6 @@ document.addEventListener('DOMContentLoaded', function documentReady() {
             let now = new Date();
             let time = now.getFullYear() + '-' + now.getMonth() + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ":" + now.getSeconds();
             let updatedTODO = event.target.parentElement.querySelector('.updated');
-            console.log(updatedTODO);
             if (updatedTODO !== null) {
                 updatedTODO.innerHTML = 'updated: ' + time;
             } else {
@@ -117,6 +116,8 @@ document.addEventListener('DOMContentLoaded', function documentReady() {
                 updatedTODO.setAttribute('class', 'updated');
                 event.target.parentElement.appendChild(updatedTODO);
             }
+            let checkbox =event.target.parentElement.querySelector('input');
+            checkbox.checked = false;
             saveTODO();
         } else if (event.target.tagName == 'INPUT') {
             saveTODO();
