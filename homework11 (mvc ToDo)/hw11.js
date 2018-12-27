@@ -40,9 +40,9 @@ class ListModel extends EventEmitter {
         this._items.forEach((el,index) =>{
             if (el === data.oldItem) {
                 this._items[index] = data.item;
-                this.emit('edit', item);
             }
         });
+        this.emit('rebuild');
         this.saveItems();
     }
 
@@ -58,7 +58,7 @@ class ListModel extends EventEmitter {
 
     removeAll() {
         this._items = [];
-        this.emit('removeAll');
+        this.emit('rebuild');
         this.saveItems();
     }
     reverseAll() {
@@ -67,13 +67,28 @@ class ListModel extends EventEmitter {
             newItems.push(this._items[i]);
         }
         this._items = newItems;
-        this.emit('reverseAll');
+        this.emit('rebuild');
         this.saveItems();
     }
 
     checkedItem(item, done = true) {
         item.checked = done;
         this.emit('done', item);
+        this.saveItems();
+    }
+
+    itemDrag(data){
+        this._items.forEach((el,index) =>{
+
+            if (JSON.stringify(el) === JSON.stringify(data.item1)) {
+                this._items[index] = data.item2;
+            }
+            if (JSON.stringify(el) === JSON.stringify(data.item2)) {
+                this._items[index] = data.item1;
+            }
+
+        });
+        this.emit('rebuild');
         this.saveItems();
     }
 
@@ -109,8 +124,14 @@ class ListController  extends EventEmitter {
         this._listView.on('itemCheckboxChange', item => {
             this._model.checkedItem(item, !item.checked);
         });
+        this._listView.on('itemEditClick', (data) => {
+            this._model.editItem(data);
+        });
         this._listView.on('itemDeleteClick', item => {
             this._model.removeItem(item);
+        });
+        this._listView.on('itemDrag', (data) => {
+            this._model.itemDrag(data);
         });
         this._formView.on('formSubmit', (data) => {
             this._model.addItem(data);
@@ -121,13 +142,10 @@ class ListController  extends EventEmitter {
         this._formView.on('removeAllItem', () => {
             this._model.removeAll();
         });
-        this._formView.on('itemEditClick', (data) => {
-            console.log(data);
-            this._model.editItem(data);
-        });
-
     }
 }
+
+var dragSrcEl = null;
 
 class ListView extends EventEmitter {
     constructor(model, rootElement) {
@@ -144,27 +162,25 @@ class ListView extends EventEmitter {
 
         this._model.on('add', item => {
             let li = this.createTODO(item);
-        this._listContainer.appendChild(li);
+            this._listContainer.appendChild(li);
         });
 
         this._model.on('done', item => {
             this.checkItem(item);
         });
 
-        this._model.on('edit', () => {
+        this._model.on('rebuild', () => {
             this.buildList();
         });
 
-        this._model.on('removeAll', () => {
+        this._model.on('rebuild', () => {
             this.buildList();
         });
 
-        this._model.on('reverseAll', () => {
+        this._model.on('rebuild', () => {
             this.buildList();
         });
     }
-
-
 
     buildList() {
         this._listContainer.innerHTML = '';
@@ -189,7 +205,6 @@ class ListView extends EventEmitter {
         edit.innerHTML = 'Edit';
         edit.setAttribute('class', 'editItem');
         edit.addEventListener('click', event => {
-            let data = {};
             if (event.target.tagName == 'BUTTON' && event.target.className == 'editItem') {
                 event.stopPropagation();
                 let span = event.target.parentElement.querySelector('.text');
@@ -198,7 +213,6 @@ class ListView extends EventEmitter {
                 span.classList.add('edited');
                 button.innerHTML = 'Save';
                 button.setAttribute('class', 'saveItem');
-                data = {item,item};
             } else if (event.target.tagName == 'BUTTON' && event.target.className == 'saveItem') {
                 let span = event.target.parentElement.querySelector('.text');
                 let button = event.target.parentElement.querySelector('.saveItem');
@@ -209,11 +223,12 @@ class ListView extends EventEmitter {
                 let now = new Date();
                 let time = now.getFullYear() + '-' + now.getMonth() + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ":" + now.getSeconds();
                 let oldItem = Object.assign({}, item);
+                item.text = span.innerHTML;
                 item.updated = 'updated: ' + time;
                 item.checked = false;
-                data = {oldItem,item};
+                let data = {oldItem,item};
+                this.emit('itemEditClick', data);
             }
-            this.emit('itemEditClick', data);
         });
         checkbox.type = "checkbox";
         checkbox.name = "done";
@@ -239,8 +254,49 @@ class ListView extends EventEmitter {
             updatedTODO.setAttribute('class', 'updated');
             li.appendChild(updatedTODO);
         }
+        li.draggable = true;
+        li.addEventListener('dragstart', event => {
+            event.target.style.opacity = '0.4';
+
+            dragSrcEl = this;
+
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('task', JSON.stringify(event.target.task));
+        }, false);
+        li.addEventListener('dragenter', event => {
+            event.target.classList.add('over');
+        }, false);
+        li.addEventListener('dragover', event => {
+            if (event.preventDefault) {
+                event.preventDefault();
+            }
+
+            event.dataTransfer.dropEffect = 'move';
+            return false;
+        }, false);
+        li.addEventListener('dragleave', event => {
+            event.target.classList.remove('over');
+        }, false);
+        li.addEventListener('drop', event => {
+            if (event.stopPropagation) {
+                event.stopPropagation();
+            }
+
+            if (dragSrcEl.task != event.target.task) {
+                let data = {item1:JSON.parse(event.dataTransfer.getData('task')),item2:event.target.task};
+                this.emit('itemDrag', data);
+            }
+
+            return false;
+        }, false);
+        li.addEventListener('dragend', event => {
+            event.target.style.opacity = '1';
+        }, false);
+
         return li;
     }
+
+
 
     removeItem(item) {
         [].forEach.call(this._listContainer.childNodes, element => {
@@ -323,134 +379,4 @@ class FormView extends EventEmitter {
 
 document.addEventListener('DOMContentLoaded', function documentReady() {
     new ListController(document.getElementById('buy-list'));
-    /*let button = document.getElementById('add');
-    let list = document.getElementById('buy-list');
-    let buy = document.getElementById('buy');
-    let reverse = document.getElementById('reverse');
-    let clearAll = document.getElementById('removeAll');
-
-    button.addEventListener('click', addPurchase);
-    reverse.addEventListener('click', reverseElements);
-    clearAll.addEventListener('click', function () {
-       list.innerHTML = '';
-        saveTODO();
-    });
-
-    let json = localStorage.getItem('TODO');
-    if (json !== undefined) {
-        json = JSON.parse(json);
-        for (let key in json) {
-            createTODO(json[key].text,json[key].input,json[key].created,json[key].updated);
-        }
-    };
-
-    function createTODO(textTODO,checked,created,updated) {
-        let item = document.createElement('li');
-        let text = document.createElement('span');
-        let remove = document.createElement('button');
-        let edit = document.createElement('button');
-        let checkbox = document.createElement('input');
-        remove.innerHTML = 'x';
-        remove.setAttribute('class', 'removeItem');
-        edit.innerHTML = 'Edit';
-        edit.setAttribute('class', 'editItem');
-        checkbox.type = "checkbox";
-        checkbox.name = "done";
-        checkbox.checked = checked;
-        text.innerHTML = textTODO;
-        text.setAttribute('class', 'text');
-        item.appendChild(remove);
-        item.appendChild(edit);
-        item.appendChild(checkbox);
-        item.appendChild(text);
-        if (created !== undefined) {
-            let createdTODO = document.createElement('span');
-            createdTODO.innerHTML = created;
-            createdTODO.setAttribute('class', 'created');
-            item.appendChild(createdTODO);
-        }
-        if (updated !== undefined) {
-            let updatedTODO = document.createElement('span');
-            updatedTODO.innerHTML = updated;
-            updatedTODO.setAttribute('class', 'updated');
-            item.appendChild(updatedTODO);
-        }
-        list.appendChild(item);
-    }
-    function addPurchase() {
-        if (buy.value == '') {
-            return
-        }
-        let now = new Date();
-        let time = now.getFullYear() + '-' + now.getMonth() + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ":" + now.getSeconds();
-        createTODO(buy.value,false,'created: ' + time)
-        buy.value = '';
-        saveTODO();
-    }
-    function reverseElements() {
-        let elements = list.children;
-        for (let i = elements.length - 1; i>=0; i -- ) {
-            list.appendChild(elements[i]);
-        }
-        saveTODO();
-    }
-    function saveTODO() {
-        console.log(list.children);
-        let todoArr = [];
-        for (let i = 0; i < list.children.length; i++) {
-            console.log(list.children[i]);
-            let textTODO = list.children[i].querySelector('.text');
-            let createdTODO = list.children[i].querySelector('.created');
-            let updatedTODO = list.children[i].querySelector('.updated');
-            let input = list.children[i].querySelector('input');
-            createdTODO = (createdTODO != undefined) ? (createdTODO.innerHTML) : (undefined);
-            updatedTODO = (updatedTODO != undefined) ? (updatedTODO.innerHTML) : (undefined);
-            todoArr.push({text: textTODO.innerHTML,input:input.checked,created:createdTODO,updated:updatedTODO});
-        }
-        try {
-            localStorage.setItem('TODO', JSON.stringify(todoArr));
-        } catch (e) {
-            if (e == QUOTA_EXCEEDED_ERR) {
-                alert('Превышен лимит');
-            }
-        }
-    }
-    list.onclick = function(event) {
-        // вывести тип события, элемент и координаты клика
-        if (event.target.tagName == 'BUTTON' && event.target.className == 'removeItem') {
-            event.target.parentElement.remove();
-            saveTODO();
-        } else if (event.target.tagName == 'BUTTON' && event.target.className == 'editItem') {
-            event.stopPropagation();
-            let span = event.target.parentElement.querySelector('.text');
-            let button = event.target.parentElement.querySelector('.editItem');
-            span.setAttribute("contenteditable", "true");
-            span.classList.add('edited');
-            button.innerHTML = 'Save';
-            button.setAttribute('class', 'saveItem');
-        } else if (event.target.tagName == 'BUTTON' && event.target.className == 'saveItem') {
-            let span = event.target.parentElement.querySelector('.text');
-            let button = event.target.parentElement.querySelector('.saveItem');
-            span.setAttribute("contenteditable", "false");
-            span.classList.remove('edited');
-            button.innerHTML = 'Edit';
-            button.setAttribute('class', 'editItem');
-            let now = new Date();
-            let time = now.getFullYear() + '-' + now.getMonth() + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ":" + now.getSeconds();
-            let updatedTODO = event.target.parentElement.querySelector('.updated');
-            if (updatedTODO !== null) {
-                updatedTODO.innerHTML = 'updated: ' + time;
-            } else {
-                let updatedTODO = document.createElement('span');
-                updatedTODO.innerHTML = 'updated: ' + time;
-                updatedTODO.setAttribute('class', 'updated');
-                event.target.parentElement.appendChild(updatedTODO);
-            }
-            let checkbox =event.target.parentElement.querySelector('input');
-            checkbox.checked = false;
-            saveTODO();
-        } else if (event.target.tagName == 'INPUT') {
-            saveTODO();
-        }
-    }*/
 });

@@ -62,8 +62,11 @@ ul.buy-list li span {
 
 ul.buy-list li {
     margin-bottom: 20px;
-    border: 1px solid lightblue;
+    border: 2px solid lightblue;
     padding: 5px;
+}
+ul.buy-list li.over {
+    border: 2px dashed #000;
 }
 
 ul.buy-list li input:checked + .text{
