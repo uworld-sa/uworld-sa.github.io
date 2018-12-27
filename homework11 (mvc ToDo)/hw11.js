@@ -164,6 +164,8 @@ class ListView extends EventEmitter {
         });
     }
 
+
+
     buildList() {
         this._listContainer.innerHTML = '';
         this._model.getItems().forEach(item => {
@@ -212,8 +214,6 @@ class ListView extends EventEmitter {
                 data = {oldItem,item};
             }
             this.emit('itemEditClick', data);
-            //console.log('132');
-            //editSave(this,event,item)
         });
         checkbox.type = "checkbox";
         checkbox.name = "done";
@@ -241,8 +241,6 @@ class ListView extends EventEmitter {
         }
         return li;
     }
-
-
 
     removeItem(item) {
         [].forEach.call(this._listContainer.childNodes, element => {
