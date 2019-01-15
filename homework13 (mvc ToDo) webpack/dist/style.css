@@ -25,6 +25,7 @@ input {
   border-color: #f5c6cb; }
 
 ul.buy-list {
+  background: white;
   padding-left: 0px;
   list-style: none; }
   ul.buy-list .removeItem {

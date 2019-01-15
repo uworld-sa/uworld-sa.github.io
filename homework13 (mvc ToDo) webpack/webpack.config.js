@@ -1,12 +1,13 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 let conf = {
-    entry: ['./src/js/hw13.js', './src/scss/style.scss'] ,
+    entry: ['./src/js/hw13.js', './src/scss/style.scss', './src/css/style.css'] ,
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'hw13.js',
-        publicPath: 'dist/'
+        publicPath: 'dist/',
+        sourceMapFilename: '[file].map'
     },
     module: {
         rules: [
@@ -21,20 +22,36 @@ let conf = {
                 }
             },{
                 test: /\.scss$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: ['css-loader', 'sass-loader']
-                })
+                use: [{
+                    loader: process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
+                }, {
+                    loader: "css-loader", options: {
+                        sourceMap: true
+                    }
+                }, {
+                    loader: "sass-loader", options: {
+                        sourceMap: true
+                    }
+                }]
+            },{
+                test: /\.css$/,
+                use: [
+                    {loader: process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader},
+                    {
+                        loader: 'css-loader',
+                        options: {sourceMap: true},
+                    },
+                ]
             }
         ]
     },
     plugins: [
-        new ExtractTextPlugin('style.css')
+        new MiniCssExtractPlugin({filename:'style.css'})
     ]
 };
 
 module.exports =  (env, option) => {
     let production = option.mode == 'production';
-    conf.devtool = production ? false : 'eval-sourcemap';
+    conf.devtool = production ? false : 'inline-source-map';
     return conf;
 }
