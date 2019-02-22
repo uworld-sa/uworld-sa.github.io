@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded',function () {
 
         xhr.send(formData);
 
-        event.preventDefault()
+        event.preventDefault();
     });
     document.getElementById('add').addEventListener('click',function(){
         let contentDiv = document.querySelectorAll('#content > div');
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded',function () {
                 for (let el of response.data) {
                     let li = document.createElement('li');
                     li.innerText = `Название: ${el.name}  Калорийность: ${el.calories}`;
-                    ul.appendChild(li)
+                    ul.appendChild(li);
                 }
                 document.getElementById('listpage').innerText = '';
                 document.getElementById('listpage').appendChild(ul);
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded',function () {
             let findList = document.getElementById('findList');
             findList.style.display = 'none';
             event.preventDefault();
-            return
+            return false;
         }
 
         let XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded',function () {
                 for (let el of response.data) {
                     let li = document.createElement('li');
                     li.innerText = `Название: ${el.name}  Калорийность: ${el.calories}`;
-                    li.addEventListener('click',function () {
+                    li.addEventListener('click',function (currentItem,el,findList) {
                         currentItem = el;
                         findList.innerHTML = '';
                         let input = document.getElementById('findDish');

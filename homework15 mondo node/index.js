@@ -1,25 +1,25 @@
 // Import express
-let express = require('express');
+import express from 'express';
 // Import Body parser
-let bodyParser = require('body-parser');
+import { urlencoded, json } from 'body-parser';
 // Import Mongoose
-let mongoose = require('mongoose');
+import { connect, connection } from 'mongoose';
 // Initialize the app
 let app = express();
 // Import routes
-let apiRoutes = require("./api-routes")
+import apiRoutes from "./api-routes";
 // Configure bodyparser to handle post requests
-app.use(bodyParser.urlencoded());
-app.use(bodyParser.json());
+app.use(urlencoded());
+app.use(json());
 // Connect to Mongoose and set connection variable
-mongoose.connect('mongodb://localhost/foods');
-var db = mongoose.connection;
+connect('mongodb://localhost/foods');
+var db = connection;
 // Setup server port
 var port = process.env.PORT || 3000;
 // Send message for default URL
 app.get('/', (req, res) => res.send('Hello World with Express'));
 // Use Api routes in the App
-app.use('/api', apiRoutes)
+app.use('/api', apiRoutes);
 // Launch app to listen to specified port
 app.listen(port, function () {
     console.log("Running on port " + port);
