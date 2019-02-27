@@ -1,0 +1,41 @@
+.Home {
+  position: relative; }
+
+.Home .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  top: 0px;
+  left: 0px; }
+
+.Home .imgWrap {
+  width: 100%;
+  height: 100vh; }
+
+.Home .imgWrap .front {
+  object-fit: cover;
+  width: 100%;
+  height: 100%; }
+
+.Home .titleWrap {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+.Home .titleWrap .title {
+  max-width: 900px;
+  padding: 0px 30px;
+  font-size: 30px;
+  color: white;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  line-height: 50px; }
+
+/*# sourceMappingURL=Home.css.map */
