@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded',function () {
         fetch(`${baseUrl}/users/${userName}`,
             {
                 'headers' : {
-                    'Authorization' : "token be31853e134ef7ecca47ffc07b238ec444f5aef1 "
+                    'Authorization' : "token b1f7bdd3c5e5ec1f92c9b4f182cab1692445ca7e  "
                 }
             })
             .then(function(response) {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded',function () {
         fetch(`${baseUrl}/repos/${userName}/${el.dataset.repoName}/commits`,
             {
                 'headers' : {
-                    'Authorization' : "token be31853e134ef7ecca47ffc07b238ec444f5aef1 "
+                    'Authorization' : "token b1f7bdd3c5e5ec1f92c9b4f182cab1692445ca7e  "
                 }
             })
             .then(function(response) {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded',function () {
         fetch(`${baseUrl}/users/${userName}/repos`,
             {
                 'headers' : {
-                    'Authorization' : "token be31853e134ef7ecca47ffc07b238ec444f5aef1 "
+                    'Authorization' : "token b1f7bdd3c5e5ec1f92c9b4f182cab1692445ca7e  "
                 }
             })
         .then(function(response) {
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded',function () {
     fetch(`${baseUrl}/users/${userName}`,
         {
             'headers' : {
-                'Authorization' : "token be31853e134ef7ecca47ffc07b238ec444f5aef1 "
+                'Authorization' : "token b1f7bdd3c5e5ec1f92c9b4f182cab1692445ca7e  "
             }
         })
     .then(function(response) {
