@@ -6,10 +6,11 @@ document.addEventListener('DOMContentLoaded',function () {
         fetch(`${baseUrl}/users/${userName}`,
             {
                 'headers' : {
-                    'Authorization' : "token 0f3abf692966289b8062cdb57d15f4524013a2b8"
+                    'Authorization' : "token be31853e134ef7ecca47ffc07b238ec444f5aef1 "
                 }
             })
             .then(function(response) {
+                console.log(response);
                 return response.json();
             })
             .then(function(user) {
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded',function () {
         fetch(`${baseUrl}/repos/${userName}/${el.dataset.repoName}/commits`,
             {
                 'headers' : {
-                    'Authorization' : "token 0f3abf692966289b8062cdb57d15f4524013a2b8"
+                    'Authorization' : "token be31853e134ef7ecca47ffc07b238ec444f5aef1 "
                 }
             })
             .then(function(response) {
@@ -77,7 +78,7 @@ document.addEventListener('DOMContentLoaded',function () {
         fetch(`${baseUrl}/users/${userName}/repos`,
             {
                 'headers' : {
-                    'Authorization' : "token 0f3abf692966289b8062cdb57d15f4524013a2b8"
+                    'Authorization' : "token be31853e134ef7ecca47ffc07b238ec444f5aef1 "
                 }
             })
         .then(function(response) {
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded',function () {
     fetch(`${baseUrl}/users/${userName}`,
         {
             'headers' : {
-                'Authorization' : "token 0f3abf692966289b8062cdb57d15f4524013a2b8"
+                'Authorization' : "token be31853e134ef7ecca47ffc07b238ec444f5aef1 "
             }
         })
     .then(function(response) {
@@ -120,7 +121,6 @@ document.addEventListener('DOMContentLoaded',function () {
         let avatar = document.querySelector('.avatar');
         avatar.html = '';
         avatar.appendChild(picture);
-        console.log(window.location.hash);
         if (window.location.hash == '' || window.location.hash == "#profile") {
             getProfile(user);
         } else if (window.location.hash == '#repos') {
