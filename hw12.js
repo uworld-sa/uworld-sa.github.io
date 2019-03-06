@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded',function () {
                 info.style.display = "block";
                 document.querySelector('.pan-loader').style.display = "none";
             })
-            .catch( alert );
+            .catch( console.log );
     }
 
     function getRepository(){
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded',function () {
             info.style.display = "block";
             document.querySelector('.pan-loader').style.display = "none";
         })
-        .catch( alert );
+        .catch( console.log );
     }
 
     fetch(`${baseUrl}/users/${userName}`)
@@ -119,5 +119,5 @@ document.addEventListener('DOMContentLoaded',function () {
             getRepository();
         }
     })
-    .catch( alert );
+    .catch( console.log );
 });
