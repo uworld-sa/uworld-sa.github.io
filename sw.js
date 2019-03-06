@@ -21,6 +21,7 @@ self.addEventListener('fetch', function(event) {
                 return response;
             });
         }).catch(function() {
+            console.log('123');
             return caches.match('/#404');
         })
     );
