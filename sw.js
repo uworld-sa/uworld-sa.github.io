@@ -4,7 +4,8 @@ self.addEventListener('install', function(event) {
             return cache.addAll([
                 '/index.html',
                 '/hw12.js',
-                '/style.css'
+                '/style.css',
+                '/#404'
             ]);
         })
     );
