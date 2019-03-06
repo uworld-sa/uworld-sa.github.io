@@ -4,8 +4,7 @@ self.addEventListener('install', function(event) {
             return cache.addAll([
                 '/index.html',
                 '/hw12.js',
-                '/style.css',
-                '/#404'
+                '/style.css'
             ]);
         })
     );
@@ -21,9 +20,6 @@ self.addEventListener('fetch', function(event) {
 
                 return response;
             });
-        }).catch(function() {
-            console.log('123');
-            return caches.match('/#404');
         })
     );
 });

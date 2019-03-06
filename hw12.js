@@ -12,12 +12,24 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+function notFound() {
+    let info = document.querySelector('.info');
+    info.innerHTML = ``;
+    let h1 = document.createElement('h1');
+    h1.innerHTML = `404`;
+    info.appendChild(h1);
+    let div = document.createElement('div');
+    div.innerHTML = `Интернет отсутствует`;
+    info.appendChild(div);
+    info.style.display = "block";
+    document.querySelector('.pan-loader').style.display = "none";
+}
+
 document.addEventListener('DOMContentLoaded',function () {
 
     document.getElementById('profile').addEventListener('click',function(){
         fetch(`${baseUrl}/users/${userName}`)
             .then(function(response) {
-                console.log(response);
                 return response.json();
             })
             .then(function(user) {
@@ -70,7 +82,7 @@ document.addEventListener('DOMContentLoaded',function () {
                 info.style.display = "block";
                 document.querySelector('.pan-loader').style.display = "none";
             })
-            .catch( console.log );
+            .catch( notFound );
     }
 
     function getRepository(){
@@ -100,7 +112,7 @@ document.addEventListener('DOMContentLoaded',function () {
             info.style.display = "block";
             document.querySelector('.pan-loader').style.display = "none";
         })
-        .catch( console.log );
+        .catch( notFound );
     }
 
     fetch(`${baseUrl}/users/${userName}`)
@@ -119,5 +131,5 @@ document.addEventListener('DOMContentLoaded',function () {
             getRepository();
         }
     })
-    .catch( console.log );
+    .catch( notFound );
 });
